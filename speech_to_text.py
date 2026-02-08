@@ -1,13 +1,24 @@
-# stt.py
 import sounddevice as sd
 import vosk
 import queue
 import sys
 import json
 import threading
+from pathlib import Path
 
-MODEL_PATH = "C:/Users/90553/Downloads/vosk/vosk-model-small-en-us-0.15"  # put your path
-model = vosk.Model(MODEL_PATH)
+def get_base_dir():
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent
+    return Path(__file__).resolve().parent
+
+BASE_DIR = get_base_dir()
+
+MODEL_PATH = BASE_DIR / "vosk-model-small-en-us-0.15"
+
+if not MODEL_PATH.exists():
+    MODEL_PATH = Path("C:/Users/90553/Downloads/vosk/vosk-model-small-en-us-0.15")
+
+model = vosk.Model(str(MODEL_PATH))
 
 q = queue.Queue()
 stop_listening_flag = threading.Event()
